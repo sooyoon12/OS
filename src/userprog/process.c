@@ -41,8 +41,13 @@ process_execute (const char *file_name)
     return TID_ERROR;
   strlcpy (fn_copy, file_name, PGSIZE);
 
+<<<<<<< HEAD
   // 작성
    char cmd_file[128];
+=======
+  // 파일 이름에서 명령어 추출
+  char cmd_file[128];
+>>>>>>> 3c6c1dc (Add proj2 folder and its files)
   size_t len = 0;
 
   while (file_name[len] != '\0' && file_name[len] != ' ') {
@@ -56,6 +61,7 @@ process_execute (const char *file_name)
     palloc_free_page(fn_copy); 
     return TID_ERROR;
   }
+<<<<<<< HEAD
 
 
   
@@ -74,6 +80,32 @@ process_execute (const char *file_name)
 
 /* A thread function that loads a user process and starts it
    running. */
+=======
+  file_close(file);  
+
+  /* Create a new thread to execute FILE_NAME. */
+  tid = thread_create (cmd_file, PRI_DEFAULT, start_process, fn_copy);
+  if (tid == TID_ERROR) {
+    palloc_free_page (fn_copy);
+    return TID_ERROR;
+  }
+
+  struct thread *child_thread = get_thread_by_tid(tid);
+  if (child_thread != NULL) {
+    sema_down(&(child_thread->load_lock)); // 자식이 load 완료될 때까지 대기
+    if (!child_thread->load_success) {
+        tid = TID_ERROR;
+    }
+}
+  return tid;
+}
+
+
+
+/* A thread function that loads a user process and starts it
+   running. */
+
+>>>>>>> 3c6c1dc (Add proj2 folder and its files)
 static void
 start_process (void *file_name_)
 {
@@ -88,10 +120,19 @@ start_process (void *file_name_)
   if_.eflags = FLAG_IF | FLAG_MBS;
   success = load (file_name, &if_.eip, &if_.esp);
 
+<<<<<<< HEAD
   /* If load failed, quit. */
   palloc_free_page (file_name);
   if (!success) 
     thread_exit ();
+=======
+  thread_current()->load_success = success; // 성공 여부 저장
+  sema_up(&thread_current()->load_lock); // 부모에게 신호 전달
+  palloc_free_page(file_name);
+    
+  if (!success) 
+    thread_exit();
+>>>>>>> 3c6c1dc (Add proj2 folder and its files)
 
   /* Start the user process by simulating a return from an
      interrupt, implemented by intr_exit (in
@@ -103,6 +144,10 @@ start_process (void *file_name_)
   NOT_REACHED ();
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3c6c1dc (Add proj2 folder and its files)
 /* Waits for thread TID to die and returns its exit status.  If
    it was terminated by the kernel (i.e. killed due to an
    exception), returns -1.  If TID is invalid or if it was not a
@@ -113,6 +158,7 @@ start_process (void *file_name_)
    This function will be implemented in problem 2-2.  For now, it
    does nothing. */
 
+<<<<<<< HEAD
 int process_wait(tid_t child_tid) 
 {
     struct thread *curr = thread_current();
@@ -144,6 +190,18 @@ int process_wait(tid_t child_tid)
     int exit_status = child->exit_status;
 
     // 자식 프로세스의 자원을 정리
+=======
+// process_wait 함수에서 자식 종료 시 자원 해제 추가
+int process_wait(tid_t child_tid) {
+    struct thread *curr = thread_current();
+    struct thread *child = get_thread_by_tid(child_tid);
+    if (child == NULL || child->waited) return -1;
+
+    // 자식이 종료될 때까지 대기
+    sema_down(&(child->child_lock));
+
+    int exit_status = child->exit_status;
+>>>>>>> 3c6c1dc (Add proj2 folder and its files)
     list_remove(&(child->child_elem));
     sema_up(&(child->mem_lock));
     child->waited = true;
@@ -180,6 +238,14 @@ process_exit (void)
       pagedir_activate (NULL);
       pagedir_destroy (pd);
     }
+<<<<<<< HEAD
+=======
+    for (int i = 2; i < 128; i++) {
+        if (cur->FD[i] != NULL)
+            file_close(cur->FD[i]);
+    }
+
+>>>>>>> 3c6c1dc (Add proj2 folder and its files)
    
     sema_up(&(cur->child_lock));
     sema_down(&(cur->mem_lock));
@@ -558,6 +624,10 @@ load_segment (struct file *file, off_t ofs, uint8_t *upage,
   return true;
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3c6c1dc (Add proj2 folder and its files)
 /* Create a minimal stack by mapping a zeroed page at the top of
    user virtual memory. */
 static bool

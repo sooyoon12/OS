@@ -80,6 +80,11 @@ typedef int tid_t;
    only because they are mutually exclusive: only a thread in the
    ready state is on the run queue, whereas only a thread in the
    blocked state is on a semaphore wait list. */
+<<<<<<< HEAD
+=======
+struct thread *get_thread_by_tid(tid_t tid);
+
+>>>>>>> 3c6c1dc (Add proj2 folder and its files)
 struct thread
   {
     /* Owned by thread.c. */
@@ -88,8 +93,15 @@ struct thread
     char name[16];                      /* Name (for debugging purposes). */
     uint8_t *stack;                     /* Saved stack pointer. */
     int priority;                       /* Priority. */
+<<<<<<< HEAD
     struct list_elem allelem;           /* List element for all threads list. */
 
+=======
+    struct list_elem allelem;   
+    struct semaphore exec_sema;    // 자식 스레드 로드 대기용 세마포어
+    struct thread *parent;           /* List element for all threads list. */
+    bool load_success;
+>>>>>>> 3c6c1dc (Add proj2 folder and its files)
     /* Shared between thread.c and synch.c. */
     struct list_elem elem;              /* List element. */
 
@@ -103,10 +115,21 @@ struct thread
     
     int exit_status;                  /* Exit status of process */
     struct list child_list;           /* List of child processes */
+<<<<<<< HEAD
     struct list_elem child_elem;      /* Element of child_list */
     // Semaphores작성
     struct semaphore mem_lock;        
     struct semaphore child_lock;     
+=======
+    struct list_elem child_elem; 
+     /* Element of child_list */
+    // Semaphores작성
+    struct semaphore mem_lock;        
+    struct semaphore child_lock;   
+    struct semaphore load_lock;
+
+    struct file* FD[128];
+>>>>>>> 3c6c1dc (Add proj2 folder and its files)
 #endif
 
     /* Owned by thread.c. */

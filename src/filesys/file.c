@@ -2,13 +2,22 @@
 #include <debug.h>
 #include "filesys/inode.h"
 #include "threads/malloc.h"
+<<<<<<< HEAD
 
+=======
+#include "threads/synch.h"
+>>>>>>> 3c6c1dc (Add proj2 folder and its files)
 /* An open file. */
 struct file 
   {
     struct inode *inode;        /* File's inode. */
     off_t pos;                  /* Current position. */
+<<<<<<< HEAD
     bool deny_write;            /* Has file_deny_write() been called? */
+=======
+    bool deny_write;  
+    struct semaphore file_lock;           /* Has file_deny_write() been called? */
+>>>>>>> 3c6c1dc (Add proj2 folder and its files)
   };
 
 /* Opens a file for the given INODE, of which it takes ownership,
@@ -23,6 +32,10 @@ file_open (struct inode *inode)
       file->inode = inode;
       file->pos = 0;
       file->deny_write = false;
+<<<<<<< HEAD
+=======
+      sema_init(&file->file_lock, 1);
+>>>>>>> 3c6c1dc (Add proj2 folder and its files)
       return file;
     }
   else
@@ -68,8 +81,16 @@ file_get_inode (struct file *file)
 off_t
 file_read (struct file *file, void *buffer, off_t size) 
 {
+<<<<<<< HEAD
   off_t bytes_read = inode_read_at (file->inode, buffer, size, file->pos);
   file->pos += bytes_read;
+=======
+  ASSERT(file != NULL);
+  sema_down(&file->file_lock);
+  off_t bytes_read = inode_read_at (file->inode, buffer, size, file->pos);
+  file->pos += bytes_read;
+  sema_up(&file->file_lock); 
+>>>>>>> 3c6c1dc (Add proj2 folder and its files)
   return bytes_read;
 }
 
@@ -81,7 +102,15 @@ file_read (struct file *file, void *buffer, off_t size)
 off_t
 file_read_at (struct file *file, void *buffer, off_t size, off_t file_ofs) 
 {
+<<<<<<< HEAD
   return inode_read_at (file->inode, buffer, size, file_ofs);
+=======
+  ASSERT(file != NULL);
+  sema_down(&file->file_lock); 
+  off_t bytes_read = inode_read_at (file->inode, buffer, size, file_ofs);
+  sema_up(&file->file_lock); 
+  return bytes_read;
+>>>>>>> 3c6c1dc (Add proj2 folder and its files)
 }
 
 /* Writes SIZE bytes from BUFFER into FILE,
@@ -94,8 +123,16 @@ file_read_at (struct file *file, void *buffer, off_t size, off_t file_ofs)
 off_t
 file_write (struct file *file, const void *buffer, off_t size) 
 {
+<<<<<<< HEAD
   off_t bytes_written = inode_write_at (file->inode, buffer, size, file->pos);
   file->pos += bytes_written;
+=======
+  ASSERT(file != NULL);
+  sema_down(&file->file_lock); 
+  off_t bytes_written = inode_write_at (file->inode, buffer, size, file->pos);
+  file->pos += bytes_written;
+  sema_up(&file->file_lock); 
+>>>>>>> 3c6c1dc (Add proj2 folder and its files)
   return bytes_written;
 }
 
@@ -110,7 +147,15 @@ off_t
 file_write_at (struct file *file, const void *buffer, off_t size,
                off_t file_ofs) 
 {
+<<<<<<< HEAD
   return inode_write_at (file->inode, buffer, size, file_ofs);
+=======
+  ASSERT(file != NULL);
+  sema_down(&file->file_lock); 
+  off_t bytes_written = inode_write_at (file->inode, buffer, size, file_ofs);
+  sema_up(&file->file_lock); 
+  return bytes_written;
+>>>>>>> 3c6c1dc (Add proj2 folder and its files)
 }
 
 /* Prevents write operations on FILE's underlying inode

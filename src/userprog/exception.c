@@ -169,6 +169,7 @@ page_fault (struct intr_frame *f)
     return;
   }
 
+<<<<<<< HEAD
   // 페이지 폴트 처리 실패 시 예외 처리
   printf ("Page fault at %p: %s error %s page in %s context.\n",
           fault_addr,
@@ -176,6 +177,9 @@ page_fault (struct intr_frame *f)
           write ? "writing" : "reading",
           user ? "user" : "kernel");
   kill (f);
+=======
+  EXIT(-1);
+>>>>>>> 3c6c1dc (Add proj2 folder and its files)
 }
 
 /* 추가함수: 스택 접근 유효성 검사 */

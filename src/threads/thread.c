@@ -11,6 +11,10 @@
 #include "threads/switch.h"
 #include "threads/synch.h"
 #include "threads/vaddr.h"
+<<<<<<< HEAD
+=======
+#include <list.h>
+>>>>>>> 3c6c1dc (Add proj2 folder and its files)
 #ifdef USERPROG
 #include "userprog/process.h"
 #endif
@@ -19,6 +23,24 @@
    Used to detect stack overflow.  See the big comment at the top
    of thread.h for details. */
 #define THREAD_MAGIC 0xcd6abf4b
+<<<<<<< HEAD
+=======
+struct list all_list;
+void
+thread_init (void);
+
+struct thread *get_thread_by_tid(tid_t tid) {
+  struct list_elem *e;
+  for (e = list_begin(&all_list); e != list_end(&all_list); e = list_next(e)) {
+    struct thread *t = list_entry(e, struct thread, allelem);
+    if (t->tid == tid) {
+      return t;
+    }
+  }
+
+  return NULL; // 해당 tid의 스레드가 없을 경우 NULL 반환
+}
+>>>>>>> 3c6c1dc (Add proj2 folder and its files)
 
 /* List of processes in THREAD_READY state, that is, processes
    that are ready to run but not actually running. */
@@ -26,7 +48,11 @@ static struct list ready_list;
 
 /* List of all processes.  Processes are added to this list
    when they are first scheduled and removed when they exit. */
+<<<<<<< HEAD
 static struct list all_list;
+=======
+
+>>>>>>> 3c6c1dc (Add proj2 folder and its files)
 
 /* Idle thread. */
 static struct thread *idle_thread;
@@ -468,17 +494,43 @@ init_thread (struct thread *t, const char *name, int priority)
   list_push_back (&all_list, &t->allelem);
   intr_set_level (old_level);
 
+<<<<<<< HEAD
 //작성
   #ifdef USERPROG
     sema_init(&(t->child_lock), 0);
     sema_init(&(t->mem_lock), 0);
 
 
+=======
+
+  #ifdef USERPROG
+    // 파일 디스크립터 초기화
+    for (int fd_index = 0; fd_index < 128; fd_index++) {
+        t->FD[fd_index] = NULL;
+    }
+
+    // 세마포어 초기화
+    sema_init(&(t->child_lock), 0);
+    sema_init(&(t->mem_lock), 0);
+    sema_init(&(t->load_lock), 0);
+
+    sema_init(&(t->exec_sema), 0);
+
+    t->parent = running_thread();
+
+    // 자식 스레드 목록 초기화 후 현재 스레드를 부모의 자식 목록에 추가
+>>>>>>> 3c6c1dc (Add proj2 folder and its files)
     list_init(&t->child_list);
     list_push_back(&(running_thread()->child_list), &(t->child_elem));
   #endif
 }
 
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> 3c6c1dc (Add proj2 folder and its files)
 /* Allocates a SIZE-byte frame at the top of thread T's stack and
    returns a pointer to the frame's base. */
 static void *
